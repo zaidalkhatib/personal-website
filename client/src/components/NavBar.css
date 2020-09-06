@@ -1,0 +1,60 @@
+.nav-Bar-List {
+    display: flex;
+    flex-direction: row;
+    font-size: 1.3rem;
+    margin-top: 0;
+    justify-content: flex-end;
+    padding: 0.7rem 1.2rem;
+    transition: all 2s;
+}
+
+.nav-bar-element {
+    margin: 1rem 3rem;
+    color: white;
+    transition: all 0.4s;
+    cursor: pointer;
+}
+
+.mediaIcon {
+    font-size: 2rem;
+}
+
+.nav-bar-icon {
+    margin: 1rem 3rem;
+    color: white;
+    transition: all 0.4s;
+}
+
+.nav-bar-element:hover {
+    border-top: 0.09rem solid;
+}
+
+@media only screen and (max-width: 1100px) {
+    .nav-Bar-List {
+        margin-bottom: 20rem;
+        padding-bottom: 102rem;
+    }
+    .nav-Bar-List {
+        padding: 1rem;
+        justify-content: center;
+    }
+    .nav-bar-element {
+        margin: 1rem 1.3rem;
+        cursor: pointer;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .nav-bar-element {
+        margin: 1rem;
+        padding: 0 0.5rem;
+        font-size: 1.3rem;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .nav-bar-element {
+        font-size: 1.1rem;
+        padding: 0 0.5rem;
+    }
+}
