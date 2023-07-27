@@ -33,7 +33,7 @@ const NavBar = () => {
           Resume
         </a>
         <a
-          href="https://www.linkedin.com/in/zaid-alkhatib-1736bb197/"
+          href="https://media.licdn.com/dms/document/media/D562DAQE0uyqpiSXqlg/profile-treasury-document-pdf-analyzed/0/1689355087030?e=1691625600&v=beta&t=OuVSnalUIErlxYvsLupiQatuON71iyluJEobWESguVI"
           className="nav-bar-element mediaIcon"
         >
           <i class="fab fa-linkedin"></i>
