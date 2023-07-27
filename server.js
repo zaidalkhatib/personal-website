@@ -1,11 +1,13 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
-const key = require("./key");
 const app = express();
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
 const PORT = 5000
+
 app.post("/message", (req, res) => {
   console.log(req.body);
   const output = `
@@ -22,14 +24,14 @@ app.post("/message", (req, res) => {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: key.senderEmail,
-      pass: key.password,
+      user: process.env.SENDER_EMAIL, // Changed to use environment variable
+      pass: process.env.PASSWORD,     // Changed to use environment variable
     },
   });
 
   var mailOptions = {
     from: req.body.email,
-    to: key.reciverEmail,
+    to: process.env.RECIVER_EMAIL,   // Changed to use environment variable
     subject: "You have a new message",
     html: output,
   };
@@ -52,7 +54,7 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
 }
+
 app.listen(process.env.PORT || PORT, () => {
   console.log(`Server is running on port ${process.env.PORT || PORT}`);
 });
-
