@@ -5,7 +5,7 @@ const key = require("./key");
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-
+const PORT = 5000
 app.post("/message", (req, res) => {
   console.log(req.body);
   const output = `
@@ -22,14 +22,14 @@ app.post("/message", (req, res) => {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "teenozaytoon@gmail.com",
+      user: key.senderEmail,
       pass: key.password,
     },
   });
 
   var mailOptions = {
     from: req.body.email,
-    to: "zalkhatib@mail.sfsu.edu",
+    to: key.reciverEmail,
     subject: "You have a new message",
     html: output,
   };
@@ -52,4 +52,7 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
 }
-app.listen(process.env.PORT, () => {});
+app.listen(process.env.PORT || PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT || PORT}`);
+});
+
