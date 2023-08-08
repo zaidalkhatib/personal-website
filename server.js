@@ -1,14 +1,22 @@
 const express = require ('express');
 const nodemailer = require ('nodemailer');
 const bodyParser = require ('body-parser');
-const sslRedirect = require ('heroku-ssl-redirect');
 const app = express ();
 
 app.use (bodyParser.urlencoded ({extended: false}));
 app.use (bodyParser.json ());
 
 // HTTPS redirect middleware
-app.use (sslRedirect ());
+app.use ((req, res, next) => {
+  if (
+    req.header ('x-forwarded-proto') !== 'https' &&
+    process.env.NODE_ENV === 'production'
+  ) {
+    res.redirect (`https://${req.header ('host')}${req.url}`);
+  } else {
+    next ();
+  }
+});
 
 const PORT = 5000;
 
