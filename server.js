@@ -1,21 +1,28 @@
-const express = require("express");
-const nodemailer = require("nodemailer");
-const bodyParser = require("body-parser");
-const app = express();
+const express = require ('express');
+const nodemailer = require ('nodemailer');
+const bodyParser = require ('body-parser');
+const app = express ();
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
-app.use((req, res, next) => {
-  if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === "production") {
-    res.redirect(`https://${req.header('host')}${req.url}`);
+app.use (bodyParser.urlencoded ({extended: false}));
+app.use (bodyParser.json ());
+
+// HTTPS redirect middleware
+app.use ((req, res, next) => {
+  if (
+    req.header ('x-forwarded-proto') !== 'https' &&
+    process.env.NODE_ENV === 'production'
+  ) {
+    res.redirect (`https://${req.header ('host')}${req.url}`);
   } else {
-    next();
+    next ();
   }
 });
-const PORT = 5000
 
-app.post("/message", (req, res) => {
-  console.log(req.body);
+const PORT = 5000;
+
+app.post ('/message', async (req, res) => {
+  console.log (req.body); // Caution: Ensure you're not logging sensitive data in production!
+
   const output = `
   <h1> message </h1>
   <ul>  
@@ -25,42 +32,43 @@ app.post("/message", (req, res) => {
   </ul>
   <h3>Message</h3>
   <h1>${req.body.contant}</h1>
-`;
+  `;
 
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
+  const transporter = nodemailer.createTransport ({
+    service: 'gmail',
     auth: {
-      user: process.env.SENDER_EMAIL, // Changed to use environment variable
-      pass: process.env.PASSWORD,     // Changed to use environment variable
+      user: process.env.SENDER_EMAIL,
+      pass: process.env.PASSWORD,
     },
   });
 
-  var mailOptions = {
+  const mailOptions = {
     from: req.body.email,
-    to: process.env.RECIVER_EMAIL,   // Changed to use environment variable
-    subject: "You have a new message",
+    to: process.env.RECIVER_EMAIL,
+    subject: 'You have a new message',
     html: output,
   };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-      // res.render(__dirname + "/views/failed.ejs", {msg: "email sent"});
-    } else {
-      console.log("Email sent: " + info.response);
-      // res.render(__dirname + "/views/success.ejs", {msg: "email sent"});
-    }
-  });
+  try {
+    const info = await transporter.sendMail (mailOptions);
+    console.log ('Email sent: ' + info.response);
+    res.status (200).send ({message: 'Email sent successfully!'});
+  } catch (error) {
+    console.error ('Error sending email:', error);
+    res
+      .status (500)
+      .send ({message: 'Failed to send the email. Please try again later.'});
+  }
 });
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
-  const path = require("path");
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+if (process.env.NODE_ENV === 'production') {
+  app.use (express.static ('client/build'));
+  const path = require ('path');
+  app.get ('*', (req, res) => {
+    res.sendFile (path.resolve (__dirname, 'client', 'build', 'index.html'));
   });
 }
 
-app.listen(process.env.PORT || PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT || PORT}`);
+app.listen (process.env.PORT || PORT, () => {
+  console.log (`Server is running on port ${process.env.PORT || PORT}`);
 });
